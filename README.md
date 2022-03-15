@@ -25,6 +25,15 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
 ### 预览页面
+
+#### 发现页面
 ![Image text](https://raw.githubusercontent.com/CongCong-1228/cloudmusic/master/img-folder/img.png)
+
+#### 登陆页面
 ![Image text](https://raw.githubusercontent.com/CongCong-1228/cloudmusic/master/img-folder/img_1.png)
-![Image text](https://raw.githubusercontent.com/CongCong-1228/cloudmusic/master/img-folder/img_2.png)
+
+#### 歌单页面
+![Image text](https://raw.githubusercontent.com/CongCong-1228/cloudmusic/master/img-folder/img_3.png)
+
+#### 歌词页面
+![Image text](https://raw.githubusercontent.com/CongCong-1228/cloudmusic/master/img-folder/img_4.png)
