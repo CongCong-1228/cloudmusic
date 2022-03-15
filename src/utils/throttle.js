@@ -1,15 +1,17 @@
-export default function throttle(f, time,asthis) {
-    let coolDown = false
+let timer = null
+let coolDown = false
+export default function throttle(f, time) {
     return function (...args) {
         if (coolDown) return
-        console.log(asthis)
-        f.call(asthis, ...args)
+        f.call(undefined, ...args)
         coolDown = true
-        let timer = setTimeout(() => {
+        timer = setTimeout(() => {
             coolDown = false
             clearTimeout(timer)
         }, time)
     }
+
+
 }
 
 // how to use throttle function

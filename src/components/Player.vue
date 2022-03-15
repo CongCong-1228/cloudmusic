@@ -2,7 +2,6 @@
 
   <div class="player" v-show="currentTrack">
 
-
     <VueSlider
         v-model="percent"
         :tooltip-formatter="getTime(currentTime)"

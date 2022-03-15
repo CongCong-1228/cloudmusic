@@ -43,6 +43,7 @@ export default {
       isActive: false,
       allCats: [],
       playlists: [],
+
     }
   },
   components: {Playlist},

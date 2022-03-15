@@ -1,35 +1,32 @@
 <template>
-  <div id="app">
-      <nav>
-        <div class="left">
-          <div class="button-ico" @click="back">
-            <svg-icon iconClass="go-back" style="height: 20px; width: 20px"/>
-          </div>
-          <div class="button-ico" @click="go">
-            <svg-icon iconClass="go-to" style="height: 20px; width: 20px"/>
-          </div>
+  <div id="app" @scroll="handle">
+    <nav>
+      <div class="left">
+        <div class="button-ico" @click="back">
+          <svg-icon iconClass="go-back" style="height: 20px; width: 20px"/>
         </div>
-        <div class="mid">
-          <router-link to="/search" class="button">发现</router-link>
-          <router-link to="/music" class="button">音乐库</router-link>
+        <div class="button-ico" @click="go">
+          <svg-icon iconClass="go-to" style="height: 20px; width: 20px"/>
         </div>
-        <div class="right">
-          <div class="wrapper">
-            <svg-icon iconClass="search" class="search"/>
-            <input type="text" placeholder="搜索"/></div>
-          <div class="user">
-            <svg-icon iconClass="User" style="height: 100%; width: 100%"/>
-          </div>
-        </div>
-      </nav>
-
-    <router-view class="main" :key="$route.fullPath"/>
+      </div>
+      <div class="mid">
+        <router-link to="/search" class="button">发现</router-link>
+        <router-link to="/music" class="button">我的</router-link>
+      </div>
+<!--      <div class="right">-->
+<!--        <div class="wrapper">-->
+<!--          <svg-icon iconClass="search" class="search"/>-->
+<!--          <input type="text" placeholder="搜索"/></div>-->
+<!--        <div class="user">-->
+<!--          <svg-icon iconClass="User" style="height: 100%; width: 100%"/>-->
+<!--        </div>-->
+<!--      </div>-->
+    </nav>
+<!--    <Scrollbar :viewheight="viewheight"/>-->
+    <router-view ref="view" id="main" :key="$route.fullPath"/>
     <Player/>
     <Lyrics class="Lyrics" v-show="this.getLyrics"/>
 
-  <div class="scroll-bar">
-
-  </div>
   </div>
 
 </template>
@@ -38,33 +35,35 @@
 import Player from '@/components/Player'
 import Lyrics from "@/components/lyrics";
 import {mapGetters} from "vuex";
-
+// import Scrollbar from '@/components/scrollbar';
 // import Audio from '@/components/Audio'
 export default {
   data() {
     return {
-      scroll: ''
+      scroll: '',
+      viewheight: ''
     }
-  },
 
+  },
+  mounted() {
+    this.viewheight = this.$refs.view.$el.clientHeight
+  },
   components: {Player, Lyrics},
   name: "App",
   computed: {
     ...mapGetters(['getLyrics']),
   },
-  watch: {
-    scroll() {
-      console.log(this.scroll)
-    }
-  },
   methods: {
+    handle() {
+      console.log('222')
+    },
     back() {
       this.$router.back()
 
     },
     go() {
       this.$router.back()
-    }
+    },
 
   }
 
@@ -72,30 +71,21 @@ export default {
 </script>
 
 <style>
-.scroll-bar {
-  position: fixed;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 16px;
-  z-index: 1000;
-}
-/*::-webkit-scrollbar {*/
-/*  width: 15px;*/
-/*}*/
 
-::-webkit-scrollbar {
-
-  display: none;
-}
 body {
   height: 100%;
   width: 100%;
 }
+
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+::-webkit-scrollbar {
+  /* Chrome去除滚动条 */
+  display: none;
 }
 </style>
 <style scoped>
@@ -105,10 +95,12 @@ body {
   width: 100%;
 }
 
-.main {
+#main {
   padding: 64px 70px 64px 70px;
   height: 100%;
   width: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 
 nav {
@@ -125,9 +117,11 @@ nav {
   align-items: center;
   z-index: 10;
 }
+
 .left {
   display: flex;
 }
+
 .button-ico {
   display: flex;
   justify-content: center;
@@ -139,8 +133,9 @@ nav {
   background: transparent;
   cursor: pointer;
 }
+
 .button-ico:hover {
-background: rgba(209,209,214,0.28);
+  background: rgba(209, 209, 214, 0.28);
 
 }
 
@@ -206,38 +201,38 @@ background: rgba(209,209,214,0.28);
   background: rgb(242, 242, 244);
 }
 
-.right {
-  width: 200px;
-  height: 32px;
-  margin-right: 40px;
-  display: flex;
-}
+/*.right {*/
+/*  width: 200px;*/
+/*  height: 32px;*/
+/*  margin-right: 40px;*/
+/*  display: flex;*/
+/*}*/
 
-.right input {
-  outline: none;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 6px;
-  width: 96%;
-  padding-left: 20px;
-  height: 100%;
-}
+/*.right input {*/
+/*  outline: none;*/
+/*  font-size: 16px;*/
+/*  font-weight: 600;*/
+/*  border-radius: 6px;*/
+/*  width: 96%;*/
+/*  padding-left: 20px;*/
+/*  height: 100%;*/
+/*}*/
 
-.wrapper {
-  position: relative;
-}
+/*.wrapper {*/
+/*  position: relative;*/
+/*}*/
 
-.wrapper .search {
-  position: absolute;
-  left: 5px;
-  top: 8px;
-}
+/*.wrapper .search {*/
+/*  position: absolute;*/
+/*  left: 5px;*/
+/*  top: 8px;*/
+/*}*/
 
-.user {
-  height: 32px;
-  width: 32px;
+/*.user {*/
+/*  height: 32px;*/
+/*  width: 32px;*/
 
-  text-align: center;
-}
+/*  text-align: center;*/
+/*}*/
 
 </style>

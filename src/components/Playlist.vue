@@ -5,8 +5,8 @@
         <div class="shade">
           <router-link :to="`playlist/${playlist.id.toString()}`">
             <img :src="playlist.coverImgUrl" alt=""></router-link>
-          <div class="playButton" @click="()=>playMusic(playlist)">
-            <svg-icon icon-class="play" style="height: 10px; width: 10px"></svg-icon>
+          <div class="playButton" @click.stop.prevent="()=>playMusic(playlist)">
+            <svg-icon icon-class="play" style="height: 20px; width: 20px"></svg-icon>
           </div>
         </div>
 
@@ -24,32 +24,41 @@
 
 <script>
 import {mapMutations, mapGetters, mapActions} from "vuex";
-import Throttle from "../utils/throttle";
+// import Throttle from "../utils/throttle";
 
 export default {
   data() {
-    return {}
+    return {
+      cd: false,
+      timer: null,
+    }
   },
   created() {
-
   },
   computed: {
-    ...mapGetters(['CurrentTrack', 'CurrentTrack','getPause'])
+    ...mapGetters(['CurrentTrack', 'currentTrack', 'getPause', 'musicList','audio'])
   },
   props: ['playlists'],
+  watch: {
+    musicList() {
+      this.setIndex({index: 0})
+      this.setAudioTime()
+      this.getCurrentTrack()
+      // this.Play()
+      // this.setPlay()
+      this.Play()
+      console.log(this.currentTrack.url);
+      this.audio.src = this.currentTrack.url
+      console.log(this.audio.src)
+      this.audio.play()
+    }
+  },
   methods: {
     playMusic(playlist) {
-      let _this = this
-      const throttle = Throttle( function () {
-        this.getMusicList({id: playlist.id})
-        this.getCurrentTrack()
-        this.setIndex({index: 0})
-        this.getCurrentTrack()
-        this.setPlay()
-      }, 10000,_this)
-        throttle()
+      this.getMusicList({id: playlist.id})
+
     },
-    ...mapMutations(['setPlay','getCurrentTrack','setPause','setIndex']),
+    ...mapMutations(['setPlay', 'getCurrentTrack', 'setPause', 'setIndex', 'Play','setAudioTime']),
     ...mapActions(['getMusicList']),
     playCount(number) {
       if (number / 10000 < 1) {
@@ -92,8 +101,8 @@ export default {
   position: absolute;
   display: none;
   border-radius: 50%;
-  height: 30px;
-  width: 30px;
+  height: 50px;
+  width: 50px;
   background: hsla(0, 0%, 100%, .14);
   color: aliceblue;
   transition: .2s linear;

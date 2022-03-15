@@ -103,7 +103,6 @@ export default {
       });
     },
     playing(track, i) {
-
       this.playingCurrentTrack(
           {
             index: i,
