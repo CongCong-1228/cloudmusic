@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       isMore: false,
-      categories: ['全部'],
+      categories: ['全部','华语','欧美','韩语'],
       sub: [],
       bigCats: [],
       path: {},

@@ -102,9 +102,9 @@ export default {
 
   components: {VueSlider},
   name: 'Player',
-  mounted() {
-    this.getMusicList({id: this.$route.params.id})
-  },
+  // mounted() {
+  //   this.getMusicList({id: this.$route.params.id})
+  // },
   created() {
     this.setCurrentTrack()
   },

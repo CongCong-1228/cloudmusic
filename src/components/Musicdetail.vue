@@ -52,24 +52,28 @@
 <script>
 import Category from '@/apis/category'
 
-import {mapActions, mapGetters, mapMutations} from 'vuex'
+import {mapActions, mapGetters, mapMutations,mapState} from 'vuex'
 
 export default {
   watch: {
     index() {
       this.songIndex = this.index
+    },
+    $route() {
+      this.getMusicList({id: this.$route.params.id})
     }
+
   },
   data() {
     return {
       playlist: [],
       songList: [],
-      songsId: [],
       songIndex: 0,
+      songsId:[]
     }
   },
-  created() {
-    // this.getAudio({id: document.querySelector('audio')})
+
+  mounted() {
     this.getMusicList({id: this.$route.params.id})
     Category.detailList({id: this.$route.params.id})
         .then(res => {
@@ -79,17 +83,20 @@ export default {
           Category.allMusic({ids: this.songsId})
               .then(res => {
                 this.songList = res.data.songs
+
               })
         })
   },
+
   computed: {
-    ...mapGetters(['index', 'MusicList',])
+    ...mapGetters(['index', 'musicList',]),
+    ...mapState([])
   },
   methods: {
     ...mapMutations([
       'setPlay',
       'setIndex',
-      'setCurrentTime',
+      'setAudioTime',
       'getCurrentTrack',
       'getAudio',
       'playingCurrentTrack',
@@ -103,18 +110,10 @@ export default {
       });
     },
     playing(track, i) {
-      this.playingCurrentTrack(
-          {
-            index: i,
-            name: track.name,
-            title: track.al.name,
-            avatar: track.ar[0].name,
-            bg: track.al.picUrl,
-            id: track.id,
-            dt: track.dt
-          })
       this.setIndex({index: i})
+      this.setAudioTime()
       this.setPause()
+      this.getCurrentTrack()
       this.setPlay()
     },
     updateTime(timestamp) {
@@ -132,6 +131,7 @@ export default {
     },
     onPlay() {
       this.setIndex({index: 0})
+      this.setAudioTime()
       this.getCurrentTrack()
       this.setPlay()
     }

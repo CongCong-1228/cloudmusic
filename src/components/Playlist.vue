@@ -41,23 +41,14 @@ export default {
   props: ['playlists'],
   watch: {
     musicList() {
-      this.setIndex({index: 0})
-      this.setAudioTime()
       this.getCurrentTrack()
-      // this.Play()
-      // this.setPlay()
-      this.Play()
-      console.log(this.currentTrack.url);
-      this.audio.src = this.currentTrack.url
-      console.log(this.audio.src)
-      this.audio.play()
     }
   },
   methods: {
-    playMusic(playlist) {
-      this.getMusicList({id: playlist.id})
-
-    },
+    // playMusic(playlist) {
+    //   this.getMusicList({id: playlist.id})
+    //
+    // },
     ...mapMutations(['setPlay', 'getCurrentTrack', 'setPause', 'setIndex', 'Play','setAudioTime']),
     ...mapActions(['getMusicList']),
     playCount(number) {
@@ -120,11 +111,11 @@ export default {
 }
 
 
-.shade:hover .playButton {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+/*.shade:hover .playButton {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*}*/
 
 .text {
   display: flex;

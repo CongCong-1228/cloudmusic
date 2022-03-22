@@ -10,12 +10,13 @@ const state = {
     lyricsStatus: false,
     audio: new Audio(),
     index: 0,
-    musicList: null,
     currentTrack: {},
     songsId: [],
     currentTime: 0,
     duration: '',
     volume: 100,
+    songsUrl: [],
+    musicList:[],
 }
 const getters = {
 
@@ -57,7 +58,12 @@ const getters = {
     volume: state => {
         return state.volume
     },
-
+    songsId: state => {
+        return state.songsId
+    },
+    songsUrl:state=>{
+        return state.songsUrl
+    }
 
 }
 const mutations = {
@@ -67,10 +73,11 @@ const mutations = {
             state.duration = state.audio.duration
             if (state.audio.ended) {
                 state.index += 1
-                state.audio.src = state.musicList[state.index].url
+                mutations.setAudioTime(state)
+                mutations.getCurrentTrack(state)
                 state.audio.play()
                 mutations.listenerCurrentTime(state)
-                mutations.getCurrentTrack(state)
+
             }
         })
     },
@@ -78,7 +85,7 @@ const mutations = {
         localStorage.setItem('progress', JSON.stringify({
             index: state.index,
             currentTime: state.currentTime,
-            url: state.musicList[state.index].url,
+            url: state.songsUrl[state.index].url,
             percent: state.percent,
             name: state.musicList[state.index].name,
             title: state.musicList[state.index].al.name,
@@ -95,7 +102,7 @@ const mutations = {
         state.currentTrack = {
             index: payload.index,
             currentTime: state.currentTime,
-            url: state.musicList[state.index].url,
+            url: state.songsUrl[state.index].url,
             percent: state.percent,
             name: payload.name,
             title: payload.title,
@@ -109,7 +116,7 @@ const mutations = {
         return state.currentTrack = {
             index: state.index,
             currentTime: state.currentTime,
-            url: state.musicList[state.index].url,
+            url: state.songsUrl[state.index].url,
             percent: state.percent,
             name: state.musicList[state.index].name,
             title: state.musicList[state.index].al.name,
@@ -135,39 +142,13 @@ const mutations = {
         }
         mutations.listenerCurrentTime(state)
         mutations.localStorageSet(state)
-        // mutations.setCurrentTrack()
-        // if (state.pauseStatus) {
-        //     state.pauseStatus = !state.pauseStatus
-        //     if (state.currentTime === 0) {
-        //         state.audio.src = state.currentTrack.url
-        //         state.audio.play()
-        //         mutations.listenerCurrentTime(state)
-        //     } else {
-        //         state.audio.src = state.currentTrack.url
-        //         state.audio.play()
-        //         mutations.listenerCurrentTime(state)
-        //         // }
-        //         // else{
-        //         // console.log('aaa')
-        //         // state.audio.src = mutations.setCurrentTrack(state).url
-        //         // state.audio.play()
-        //         // mutations.listenerCurrentTime(state)
-        //         // mutations.getCurrentTrack(state)
-        //     }
-        // } else {
-        //     state.pauseStatus = !state.pauseStatus
-        //     state.audio.pause()
-        //     mutations.listenerCurrentTime(state)
-        //     mutations.getCurrentTrack(state)
-        // }
-        // mutations.localStorageSet(state)
     }
 
     ,
     nextMusic(state) {
         state.pauseStatus = false
         state.index += 1
-        state.audio.src = state.musicList[state.index].url
+        state.audio.src = state.songsUrl[state.index].url
         if (!state.audio.src) {
             mutations.nextMusic(state)
         }
@@ -190,7 +171,7 @@ const mutations = {
         } else {
             state.pauseStatus = false
             state.index -= 1
-            state.audio.src = state.musicList[state.index].url
+            state.audio.src = state.songsUrl[state.index].url
             mutations.getCurrentTrack(state)
             // mutations.setCurrentTrack()
             state.audio.play()
@@ -243,31 +224,41 @@ const mutations = {
     Play: state => state.pauseStatus = false,
     setAudioTime: state => {
         state.currentTime = 0
-        state.audio.src = state.musicList[state.index].url
-    }
+        state.audio.src = state.songsUrl[state.index].url
+    },
+    setMusicList(state, payload) {
+        state.musicList = payload.musicList
+
+    },
+    setSongsId(state, payload) {
+        state.songsId = []
+        state.songsId.push(payload.id)
+    },
+    setSongsUrl(state, payload) {
+        payload.songsUrl.sort((a, b) => {
+            return state.songsId.indexOf(a.id) - state.songsId.indexOf(b.id)
+        })
+        state.songsUrl = payload.songsUrl
+        console.log(state.songsUrl)
+    },
 }
 const actions = {
-    getMusicList(context, payload) {
-
+    getMusicList({commit, state}, payload) {
         Category.detailList({id: payload.id})
             .then(res => {
-                let array = []
-                array = res.data.playlist.tracks
-                array.forEach(item => state.songsId.push(item.id))
-                state.songsId = state.songsId.splice(0, 50)
-                Song.song_url({id: state.songsId.join()})
+                const trackList = res.data.playlist.tracks
+                state.songsId = []
+                trackList.forEach(item => {
+                    state.songsId.push(item.id)
+                })
+                state.songsId = state.songsId.splice(0, 20)
+                state.songsId = state.songsId.join()
+                Song.song_url({id: state.songsId})
                     .then(res => {
-                        res.data.data.sort((a, b) => {
-                            return state.songsId.indexOf(a.id) - state.songsId.indexOf(b.id)
-                        })
-                        array.forEach((item, index) => {
-                            item.url = res.data.data[index].url
-                        })
-                        state.musicList = array
+                        commit('setSongsUrl', {songsUrl: res.data.data})
+                        commit('setMusicList', {musicList: trackList})
                     })
             })
-
-
     },
     // getSong_url(state) {
     //     return new Promise(() => {
