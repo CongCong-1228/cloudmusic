@@ -112,16 +112,15 @@ export default {
     //       console.log(res)
     //     })
 
-    // User.subcount_message({uid:this.uid})
-    //     .then(res => {
-    //       console.log(res)
-    //     })
+    User.subcount_message({uid:this.uid})
+        .then(res => {
+          console.log(res)
+        })
     User.user_playlist({uid: this.uid})
         .then(res => {
           this.likeId = res.data.playlist[0].id
           res.data.playlist.splice(0, 1)
           this.playlist = res.data.playlist
-          console.log(this.playlist)
           Category.detailList({id: this.likeId})
               .then(res => {
                 this.tracks = res.data.playlist.tracks

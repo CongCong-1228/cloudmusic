@@ -23,6 +23,10 @@ yarn lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+### 未完善
+
+登陆成功后我的页面依然是静态
+
 
 ### 预览页面
 
