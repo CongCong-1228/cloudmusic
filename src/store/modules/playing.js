@@ -16,10 +16,9 @@ const state = {
     duration: '',
     volume: 100,
     songsUrl: [],
-    musicList:[],
+    musicList: [],
 }
 const getters = {
-
     getPause: state => {
         return state.pauseStatus
     },
@@ -53,7 +52,9 @@ const getters = {
         return state.index
     },
     percent: state => {
-        return state.percent = state.currentTime / state.duration * 100
+        if (state.currentTime && state.duration) {
+            return state.percent = state.currentTime / state.duration * 100
+        }
     },
     volume: state => {
         return state.volume
@@ -61,7 +62,7 @@ const getters = {
     songsId: state => {
         return state.songsId
     },
-    songsUrl:state=>{
+    songsUrl: state => {
         return state.songsUrl
     }
 
@@ -77,7 +78,6 @@ const mutations = {
                 mutations.getCurrentTrack(state)
                 state.audio.play()
                 mutations.listenerCurrentTime(state)
-
             }
         })
     },
@@ -218,7 +218,7 @@ const mutations = {
     setPercent(state, payload) {
         // state.currentTime = (payload.percent / 100) * state.duration
         state.percent = payload.percent
-        state.audio.currentTime = (payload.percent / 100) * state.duration
+        state.audio.currentTime = (payload.percent / 100) * state.duration || 0
     },
     setPause: state => state.pauseStatus = true,
     Play: state => state.pauseStatus = false,
@@ -230,42 +230,30 @@ const mutations = {
         state.musicList = payload.musicList
 
     },
-    setSongsId(state, payload) {
-        state.songsId = []
-        state.songsId.push(payload.id)
-    },
+
     setSongsUrl(state, payload) {
         payload.songsUrl.sort((a, b) => {
             return state.songsId.indexOf(a.id) - state.songsId.indexOf(b.id)
         })
         state.songsUrl = payload.songsUrl
     },
+
 }
 const actions = {
-    getMusicList({commit, state}, payload) {
-        Category.detailList({id: payload.id})
-            .then(res => {
-                const trackList = res.data.playlist.tracks
-                state.songsId = []
-                trackList.forEach(item => {
-                    state.songsId.push(item.id)
-                })
-                state.songsId = state.songsId.splice(0, 20)
-                state.songsId = state.songsId.join()
-                Song.song_url({id: state.songsId})
-                    .then(res => {
-                        commit('setSongsUrl', {songsUrl: res.data.data})
-                        commit('setMusicList', {musicList: trackList})
-                    })
-            })
+    async getMusicList({commit, state}, payload) {
+        const res = await Category.detailList({id: payload.id})
+        const trackList = res.data.playlist.tracks
+        let list = []
+        trackList.forEach(item => {
+            list.push(item.id)
+        })
+        list = list.splice(0, 30).join()
+        // 因为Object.defineProperty的关系，我们在改变数组数据时，添加数据要用set方法
+        state.songsId = list
+        const res2 = await Song.song_url({id: state.songsId})
+        commit('setSongsUrl', {songsUrl: res2.data.data})
+        commit('setMusicList', {musicList: trackList})
     },
-    // getSong_url(state) {
-    //     return new Promise(() => {
-    //         console.log(state.songsId)
-    //
-    //
-    //     })
-    // }
 }
 
 export default {

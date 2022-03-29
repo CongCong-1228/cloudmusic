@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       isMore: false,
-      categories: ['全部','华语','欧美','韩语'],
+      categories: ['全部', '华语', '欧美', '韩语'],
       sub: [],
       bigCats: [],
       path: {},
@@ -47,7 +47,7 @@ export default {
     }
   },
   components: {Playlist},
-  created() {
+  async mounted() {
     Category.catList()
         .then(res => {
               this.bigCats = res.data.categories
@@ -59,15 +59,20 @@ export default {
                     this.path[item.category].push(item)
                   }
               )
-              const c = localStorage.getItem('categories').split(',') || ''
-              c.splice(0, 1)
-              this.categories = this.categories.concat(c)
+
+              if (localStorage.getItem('categories')) {
+                console.log('1')
+                const c = JSON.parse(localStorage.getItem('categories')).split(',')
+                c.splice(0, 1)
+                this.categories = this.categories.concat(c)
+              }
             }
         )
     Category.toplist({cat: this.$route.query.category})
         .then(res => {
           this.playlists = res.data.playlists
         })
+
   },
   methods: {
     showMore() {

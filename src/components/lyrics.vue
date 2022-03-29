@@ -78,6 +78,12 @@ import 'vue-slider-component/theme/default.css'
 export default {
   name: 'Lyric',
   components: {VueSlider},
+  data() {
+    return {
+      currLrcTime: 0,
+      lyricList: [],
+    }
+  },
   computed: {
     ...mapGetters([
       'currentTrack',
@@ -90,14 +96,19 @@ export default {
       'percent'
     ]),
     percent: {
+      // eslint-disable-next-line vue/return-in-computed-property
       get() {
+
         return this.$store.getters.percent
+
+
         // return this.$store.getters.percent * 100
       },
       set(percent) {
-        this.$store.commit('setPercent', {percent})
 
+        this.$store.commit('setPercent', {percent})
       }
+
     }
   },
 
@@ -110,10 +121,13 @@ export default {
           })
     },
     currentTime(newVal) {
-      let curr = this.lyricList.map(item => item.time).filter(item => item < newVal).slice(-1)[0]
-      if (curr !== this.currLrcTime) {
-        this.currLrcTime = curr;
-        this.$refs['lyric-' + this.currLrcTime][0].scrollIntoView({behavior: "smooth", block: "center"})
+      // 如果歌词列表不为空再去查询
+      if (!this.lyricList) {
+        let curr = this.lyricList.map(item => item.time).filter(item => item < newVal).slice(-1)[0]
+        if (curr !== this.currLrcTime) {
+          this.currLrcTime = curr;
+          this.$refs['lyric-' + this.currLrcTime][0].scrollIntoView({behavior: "smooth", block: "center"})
+        }
       }
     },
 
@@ -153,12 +167,7 @@ export default {
     },
 
   },
-  data() {
-    return {
-      currLrcTime: 0,
-      lyricList: [],
-    }
-  },
+
 
 }
 </script>
@@ -185,9 +194,10 @@ export default {
   display: flex;
   color: #fff;
 }
+
 ::-webkit-scrollbar {
-  width: 0;  /* Remove scrollbar space */
-  background: transparent;  /* Optional: just make scrollbar invisible */
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
 }
 
 .arrow-done {

@@ -6,20 +6,15 @@
         v-model="percent"
         :tooltip-formatter="getTime(currentTime)"
         :tooltip="'active'"
-        :max="100"
-        :min="0"
+        :max=100
+        :min=0
         :lazy="true"
-        :interval="1"
-        :dotSize="12"
+        :interval=1
+        :dotSize=12
         :slient="true"
-        style="width: 100%; padding: 0 15px">
+      style="width: 100%; padding: 0 15px">
 
     </VueSlider>
-    <!--      <div class="progress" :style="{ width:percent*100+'%'}">-->
-    <!--        <div class="progress-circle">-->
-    <!--          <div class="percent"></div>-->
-    <!--        </div>-->
-    <!--      </div>-->
 
     <div class="player-container">
       <div class="player-left">
@@ -109,7 +104,6 @@ export default {
     this.setCurrentTrack()
   },
   computed: {
-
     ...mapGetters([
       'getPause',
       'currentTime',
@@ -133,7 +127,7 @@ export default {
         return this.$store.getters.percent
       },
       set(percent) {
-        console.log(percent)
+        percent = Math.floor(percent)
         this.$store.commit('setPercent', {percent})
       }
     }
