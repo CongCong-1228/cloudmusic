@@ -239,7 +239,6 @@ const mutations = {
             return state.songsId.indexOf(a.id) - state.songsId.indexOf(b.id)
         })
         state.songsUrl = payload.songsUrl
-        console.log(state.songsUrl)
     },
 }
 const actions = {

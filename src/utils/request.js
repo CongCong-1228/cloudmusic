@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-axios.defaults.baseURL = 'https://netease-cloud-music-api-rosy-delta.vercel.app/'
+axios.defaults.baseURL = 'http://8.130.102.64:3000/'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.withCredentials = true
 
