@@ -122,7 +122,7 @@ export default {
     },
     currentTime(newVal) {
       // 如果歌词列表不为空再去查询
-      if (!this.lyricList) {
+      if (this.lyricList) {
         let curr = this.lyricList.map(item => item.time).filter(item => item < newVal).slice(-1)[0]
         if (curr !== this.currLrcTime) {
           this.currLrcTime = curr;
