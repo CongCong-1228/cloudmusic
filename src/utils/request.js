@@ -1,7 +1,7 @@
 import axios from "axios";
 
 axios.defaults.baseURL =
-    "https://netease-cloud-music-api-mocha-zeta.vercel.app/";
+    "https://service-p3uyod7z-1316706208.sh.apigw.tencentcs.com/release/";
 axios.defaults.headers.post["Content-Type"] =
     "application/x-www-form-urlencoded";
 axios.defaults.withCredentials = true;
